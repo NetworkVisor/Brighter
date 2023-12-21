@@ -151,7 +151,11 @@ namespace Paramore.Brighter.Outbox.Sqlite
                     if (transactionProvider != null)
                         transactionProvider.Close();
                     else
+#if NETSTANDARD2_0
                         connection.Close();
+#else
+                        await connection.CloseAsync();
+#endif
                 }
             }
         }
@@ -416,11 +420,9 @@ namespace Paramore.Brighter.Outbox.Sqlite
             var i = dr.GetOrdinal("Body");
             var body = dr.GetStream(i);
             var buffer = new byte[body.Length];
-#if NETSTANDARD2_0
-            body.Read(buffer, 0, buffer.Length);
-#else
-            body.Read(buffer);
-#endif
+
+            body.Read(buffer, 0, (int)body.Length);
+
             return buffer;
         }
 

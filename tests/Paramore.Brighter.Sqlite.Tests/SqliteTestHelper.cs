@@ -50,10 +50,11 @@ namespace Paramore.Brighter.Sqlite.Tests
             return Path.Combine(_connectionStringPathDir, $"test{guidInPath}.db");
         }
 
-        public async void CleanUpDb()
+        public async Task CleanUpDbAsync()
         {
             try
             {
+                //add 1 MS delay to allow the file to be released
                 await Task.Delay(1);
                 File.Delete(_connectionStringPath);
                 Directory.Delete(_connectionStringPathDir, true);
